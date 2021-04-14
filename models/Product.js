@@ -31,4 +31,28 @@ const ProductSchema = mongoose.Schema({
   description: String,
 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+const ProductModel = mongoose.model("Product", ProductSchema);
+
+class Product {
+  constructor() {}
+
+  static getAll() {
+    return ProductModel.find().lean();
+  }
+  static getAllByBrand(brand) {
+    return ProductModel.find({ brand }).lean();
+  }
+  static getById(id) {
+    return ProductModel.findById(mongoose.Types.ObjectId(id)).lean();
+  }
+  static updateById(id, newProduct) {
+    return ProductSchema.findByIdAndUpdate(mongoose.Types.ObjectId(id), {
+      ...newProduct,
+    });
+  }
+  static removeById(id) {
+    return ProductSchema.findByIdAndDelete(mongoose.Types.ObjectId(id));
+  }
+}
+
+module.exports = Product;

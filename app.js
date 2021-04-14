@@ -9,8 +9,11 @@ var dotenv = require("dotenv");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var testAPIRouter = require("./routes/testAPI");
 var productRouter = require("./routes/product");
+var authRouter = require("./routes/auth");
+var accountRouter = require("./routes/account");
+var initRoleRouter = require("./routes/initRole");
+var initAdminRouter = require("./routes/initAdmin");
 
 var app = express();
 
@@ -45,10 +48,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/testAPI", testAPIRouter);
 app.use("/api/products", productRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/account", accountRouter);
+app.use("/api/initRole", initRoleRouter);
+app.use("/api/initAdmin", initAdminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -2,6 +2,7 @@ const express = require("express");
 const {
   postSampleProducts,
   getAllProducts,
+  getAllProductsByBrand,
   getProduct,
   putProduct,
   deleteProduct,
@@ -14,6 +15,10 @@ productRouter.get("/:id", getProduct, (req, res) => {
 });
 
 productRouter.get("/", getAllProducts, (req, res) => {
+  res.json(res.allProducts);
+});
+
+productRouter.get("/brand/:name", getAllProductsByBrand, (req, res) => {
   res.json(res.allProducts);
 });
 

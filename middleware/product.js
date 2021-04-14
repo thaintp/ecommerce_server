@@ -1,46 +1,48 @@
 const { Product } = require("../models");
-const mongoose = require("mongoose");
+const { throwErr } = require("../utils/patterns");
 
 async function getProduct(req, res, next) {
   try {
-    res.product = await Product.findById(
-      mongoose.Types.ObjectId(req.params.id)
-    ).lean();
+    res.product = await Product.getById(req.params.id);
   } catch (err) {
-    return res.status(err.status || 500).json({ message: err.message });
+    return throwErr(err, res);
+  }
+  return next();
+}
+
+async function getAllProductsByBrand(req, res, next) {
+  try {
+    res.allProducts = await Product.getAllByBrand(req.params.name);
+  } catch (err) {
+    return throwErr(err, res);
   }
   return next();
 }
 
 async function putProduct(req, res, next) {
   try {
-    res.product = await Product.findByIdAndUpdate(
-      mongoose.Types.ObjectId(req.params.id),
-      {
-        ...req.params.product,
-      }
-    );
+    res.product = await Product.updateById(req.params.id);
   } catch (err) {
-    return res.status(err.status || 500).json({ message: err.message });
+    return throwErr(err, res);
   }
   return next();
 }
 
 async function deleteProduct(req, res, next) {
   try {
-    await Product.findByIdAndDelete(mongoose.Types.ObjectId(req.params.id));
+    await Product.removeById(id);
     res.message = "Delete successfully";
   } catch (err) {
-    return res.status(err.status || 500).json({ message: err.message });
+    return throwErr(err, res);
   }
   return next();
 }
 
 async function getAllProducts(req, res, next) {
   try {
-    res.allProducts = await Product.find().lean();
+    res.allProducts = await Product.getAll();
   } catch (err) {
-    return res.status(err.status || 500).json({ message: err.message });
+    return throwErr(err, res);
   }
   return next();
 }
@@ -50,7 +52,7 @@ async function postSampleProducts(req, res, next) {
     const products = [];
     let product1 = new Product();
 
-    product1.photos = ["https://sm.ms/image/APTRESngYMcu5ZD"];
+    product1.photos = ["https://i.loli.net/2021/04/11/APTRESngYMcu5ZD.jpg"];
     product1.name = "Collete Stretch Linen Minidress";
     product1.categories = ["Casual dresses", "Going out dresses"];
     product1.brand = "Zara";
@@ -64,7 +66,7 @@ async function postSampleProducts(req, res, next) {
     products.push(product1);
 
     let product2 = new Product();
-    product2.photos = ["https://sm.ms/image/APTRESngYMcu5ZD"];
+    product2.photos = ["https://i.loli.net/2021/04/11/APTRESngYMcu5ZD.jpg"];
     product2.name = "Plunge V-neck Denim Mini Dress";
     product2.categories = ["Casual dresses", "Sexy"];
     product2.brand = "Chanel";
@@ -79,7 +81,7 @@ async function postSampleProducts(req, res, next) {
 
     res.products = products;
   } catch (err) {
-    return res.status(err.status || 500).json({ message: err.message });
+    return throwErr(err, res);
   }
 
   return next();
@@ -88,6 +90,7 @@ async function postSampleProducts(req, res, next) {
 module.exports = {
   getProduct,
   getAllProducts,
+  getAllProductsByBrand,
   putProduct,
   deleteProduct,
   postSampleProducts,
