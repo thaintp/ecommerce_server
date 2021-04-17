@@ -1,5 +1,5 @@
-const { Product } = require("../models");
-const { throwErr } = require("../utils/patterns");
+import { Product } from "../models/index.js";
+import { throwErr } from "../utils/patterns.js";
 
 async function getProduct(req, res, next) {
   try {
@@ -87,7 +87,7 @@ async function postSampleProducts(req, res, next) {
   return next();
 }
 
-module.exports = {
+export {
   getProduct,
   getAllProducts,
   getAllProductsByBrand,

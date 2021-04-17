@@ -1,6 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { resMessage, throwErr } = require("../utils/patterns");
-const { Account, Role } = require("../models");
+import jwt from "jsonwebtoken";
+import { resMessage, throwErr } from "../utils/patterns.js";
 
 function verifyToken(req, res, next) {
   const token = req.headers["x-access-token"];
@@ -13,19 +12,19 @@ function verifyToken(req, res, next) {
     if (err) {
       return resMessage(res, 401, "Unauthorized!");
     }
-    req.userId = decoded.id;
+    req.accountID = decoded.id;
+    req.roles = decoded.roles;
     next();
   });
 }
 
 async function isAdmin(req, res, next) {
   try {
-    const account = Account.findById(req.userId);
-    if (Role.isSellerByIds(account.roles)) return next();
+    if (req.roles.includes("seller")) next();
   } catch (err) {
     throwErr(err, res);
   }
   return resMessage(res, 403, "Require Seller Role!");
 }
 
-module.exports = { verifyToken, isAdmin };
+export { verifyToken, isAdmin };

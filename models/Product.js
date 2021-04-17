@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const ProductSchema = mongoose.Schema({
   name: {
@@ -35,6 +35,26 @@ const ProductModel = mongoose.model("Product", ProductSchema);
 
 class Product {
   constructor() {}
+  async init(id) {
+    this.model = await ProductModel.findById(mongoose.Types.ObjectId(id));
+  }
+
+  async order(size, color, quantity) {
+    if (this.hasValidItem(size, color, quantity)) {
+      this.model.quantity -= quantity;
+      await this.model.save();
+      return quantity * this.model.price;
+    }
+    throw new Error("Invalid order");
+  }
+
+  hasValidItem(size, color, quantity) {
+    return (
+      this.model.sizes.includes(size) &&
+      this.model.colors.includes(color) &&
+      this.model.quantity >= quantity
+    );
+  }
 
   static getAll() {
     return ProductModel.find().lean();
@@ -55,4 +75,4 @@ class Product {
   }
 }
 
-module.exports = Product;
+export default Product;

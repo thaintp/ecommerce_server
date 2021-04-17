@@ -1,18 +1,13 @@
-const authJWT = require("../middleware/authJWT");
-const controller = require("../controllers/account.controller");
-const express = require("express");
+import { verifyToken, isAdmin } from "../middleware/authJWT.js";
+import controller from "../controllers/account.controller.js";
+import express from "express";
 
 const accountRouter = express.Router();
 
 accountRouter.get("/all", controller.allAccess);
 
-accountRouter.get("/user", authJWT.verifyToken, controller.userBoard);
+accountRouter.get("/user", verifyToken, controller.userBoard);
 
-accountRouter.get(
-  "/seller",
-  authJWT.verifyToken,
-  authJWT.isAdmin,
-  controller.adminBoard
-);
+accountRouter.get("/seller", verifyToken, isAdmin, controller.adminBoard);
 
-module.exports = accountRouter;
+export default accountRouter;

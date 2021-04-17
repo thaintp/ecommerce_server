@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const md5 = require("md5");
-const { Account, Role } = require("../models");
-const { throwErr, resMessage } = require("../utils/patterns");
+import jwt from "jsonwebtoken";
+import md5 from "md5";
+import { Account, Role } from "../models/index.js";
+import { throwErr, resMessage } from "../utils/patterns.js";
 
 async function signup(req, res) {
   try {
@@ -25,14 +25,14 @@ async function signin(req, res) {
   try {
     const account = await Account.findByEmail(req.body.email);
     if (!account) {
-      return resMessage(res, 404, "User not found");
+      return resMessage(res, 404, "Your e-mail/password is invalid!");
     }
     const hashPass = md5(req.body.password);
-    const { _id, name, email, password } = account;
+    const { _id, name, email, password, avatar, roles } = account;
     if (hashPass !== password) {
-      return resMessage(res, 401, "Wrong Password");
+      return resMessage(res, 401, "Your e-mail/password is invalid!");
     }
-    const accessToken = jwt.sign({ id: _id }, process.env.SECRET, {
+    const accessToken = jwt.sign({ id: _id, email }, process.env.SECRET, {
       expiresIn: 86400,
     });
     return res.status(200).send({
@@ -40,10 +40,12 @@ async function signin(req, res) {
       name,
       email,
       accessToken,
+      avatar,
+      roles: roles.map((role) => role.name),
     });
   } catch (err) {
     throwErr(err, res);
   }
 }
 
-module.exports = { signup, signin };
+export { signup, signin };

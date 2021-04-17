@@ -1,21 +1,26 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-var cors = require("cors");
-var mongoose = require("mongoose");
-var dotenv = require("dotenv");
+import createError from "http-errors";
+import express from "express";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var productRouter = require("./routes/product");
-var authRouter = require("./routes/auth");
-var accountRouter = require("./routes/account");
-var initRoleRouter = require("./routes/initRole");
-var initAdminRouter = require("./routes/initAdmin");
+import indexRouter from "./routes/index.js";
+import usersRouter from "./routes/users.js";
+import productRouter from "./routes/product.js";
+import authRouter from "./routes/auth.js";
+import accountRouter from "./routes/account.js";
+import initRoleRouter from "./routes/initRole.js";
+import initAdminRouter from "./routes/initAdmin.js";
+import orderRouter from "./routes/order.js";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 
-var app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const app = express();
 
 // Load environment variables
 dotenv.config();
@@ -63,6 +68,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/account", accountRouter);
 app.use("/api/initRole", initRoleRouter);
 app.use("/api/initAdmin", initAdminRouter);
+app.use("/api/order", orderRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -80,4 +86,4 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-module.exports = app;
+export default app;

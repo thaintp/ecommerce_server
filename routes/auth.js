@@ -1,13 +1,13 @@
-const {
+import {
   checkDuplicateEmail,
   checkRolesExisted,
-} = require("../middleware/verifySignUp");
-const { signin, signup } = require("../controllers/auth.controller");
-const express = require("express");
+} from "../middleware/verifySignUp.js";
+import { signin, signup } from "../controllers/auth.controller.js";
+import express from "express";
 
 const authRouter = express.Router();
 
 authRouter.post("/signup", checkDuplicateEmail, checkRolesExisted, signup);
 authRouter.post("/signin", signin);
 
-module.exports = authRouter;
+export default authRouter;

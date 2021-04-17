@@ -1,22 +1,18 @@
-const mongoose = require("mongoose");
-const Role = require("./Role");
-const md5 = require("md5");
+import mongoose from "mongoose";
+import Role from "./Role.js";
+import md5 from "md5";
+import { Order } from "./index.js";
 
 const AccountSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  orders: [mongoose.Types.ObjectId],
+  name: String,
+  password: String,
+  email: String,
+  orders: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Order",
+    },
+  ],
   cart: mongoose.Types.ObjectId,
   roles: [
     {
@@ -24,6 +20,10 @@ const AccountSchema = mongoose.Schema({
       ref: "Role",
     },
   ],
+  avatar: {
+    type: String,
+    default: "https://i.loli.net/2021/04/16/BnZIhjMmzTDecEH.jpg",
+  },
 });
 
 const AccountModel = mongoose.model("Account", AccountSchema);
@@ -38,9 +38,19 @@ class Account {
   setRoles(roles) {
     this.model.roles = roles;
   }
-  save() {
-    this.model.save();
+  async save() {
+    if (this.model.roles.length === 0) {
+      this.model.roles = [await Role.getUserId()];
+    }
+    return await this.model.save();
   }
+  static order = async (accountID, items) => {
+    const _order = new Order();
+    await _order.init(items);
+    const account = await Account.findById(accountID);
+    account.orders.push(_order.getID());
+    await account.save();
+  };
   static findByEmail(email) {
     return AccountModel.findOne({ email }).populate("roles");
   }
@@ -71,4 +81,4 @@ class Account {
   }
 }
 
-module.exports = Account;
+export default Account;

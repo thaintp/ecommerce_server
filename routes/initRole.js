@@ -1,6 +1,6 @@
-const express = require("express");
-const { Role } = require("../models");
-const { resMessage } = require("../utils/patterns");
+import express from "express";
+import { Role } from "../models/index.js";
+import { resMessage } from "../utils/patterns.js";
 
 const initRoleRouter = express.Router();
 
@@ -9,4 +9,4 @@ initRoleRouter.post("/", (req, res) => {
   resMessage(res, 200, "Init successfully");
 });
 
-module.exports = initRoleRouter;
+export default initRoleRouter;

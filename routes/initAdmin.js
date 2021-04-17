@@ -1,6 +1,6 @@
-const express = require("express");
-const { Account } = require("../models");
-const { resMessage } = require("../utils/patterns");
+import express from "express";
+import { Account } from "../models/index.js";
+import { resMessage } from "../utils/patterns.js";
 
 const initAdminRouter = express.Router();
 
@@ -9,4 +9,4 @@ initAdminRouter.post("/", (req, res) => {
   resMessage(res, 200, "Init successfully");
 });
 
-module.exports = initAdminRouter;
+export default initAdminRouter;

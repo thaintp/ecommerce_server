@@ -1,5 +1,5 @@
-const { Account, Role } = require("../models");
-const { throwErr, resMessage } = require("../utils/patterns");
+import { Account, Role } from "../models/index.js";
+import { throwErr, resMessage } from "../utils/patterns.js";
 
 async function checkDuplicateEmail(req, res, next) {
   try {
@@ -24,4 +24,4 @@ function checkRolesExisted(req, res, next) {
   next();
 }
 
-module.exports = { checkDuplicateEmail, checkRolesExisted };
+export { checkDuplicateEmail, checkRolesExisted };

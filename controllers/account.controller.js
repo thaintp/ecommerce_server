@@ -10,8 +10,4 @@ const adminBoard = (req, res) => {
   res.status(200).send("Admin Content.");
 };
 
-module.exports = {
-  allAccess,
-  userBoard,
-  adminBoard,
-};
+export default { allAccess, userBoard, adminBoard };

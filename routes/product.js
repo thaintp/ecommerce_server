@@ -1,12 +1,12 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   postSampleProducts,
   getAllProducts,
   getAllProductsByBrand,
   getProduct,
   putProduct,
   deleteProduct,
-} = require("../middleware/product");
+} from "../middleware/product.js";
 
 const productRouter = express.Router();
 
@@ -33,4 +33,4 @@ productRouter.post("/postSampleDatasets", postSampleProducts, (req, res) => {
   res.json(res.products);
 });
 
-module.exports = productRouter;
+export default productRouter;

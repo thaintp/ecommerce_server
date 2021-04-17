@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const rolesName = ["user", "seller"];
 
@@ -17,6 +17,15 @@ class Role {
   static include(roleName) {
     return rolesName.includes(roleName);
   }
+  static getUserId = async () => {
+    try {
+      const role = await RoleModel.findOne({
+        name: "user",
+      });
+      return role._id;
+    } catch (err) {}
+    return undefined;
+  };
   static getSellerId = async () => {
     try {
       const role = await RoleModel.findOne({
@@ -76,4 +85,4 @@ class Role {
   }
 }
 
-module.exports = Role;
+export default Role;
