@@ -14,6 +14,7 @@ function verifyToken(req, res, next) {
     }
     req.accountID = decoded.id;
     req.roles = decoded.roles;
+    req.cart = decoded.cart;
     next();
   });
 }

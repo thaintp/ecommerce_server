@@ -1,7 +1,9 @@
 const throwErr = (err, res) =>
-  res.status(err.status || 500).json({ message: err.message });
+  res.status(err.status || 500).send({ message: err.message });
 
 const resMessage = (res, status, message) =>
   res.status(status).send({ message: message });
 
-export { throwErr, resMessage };
+const resSend = (res, status, data) => res.status(status).send(data);
+
+export { throwErr, resMessage, resSend };

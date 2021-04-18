@@ -28,13 +28,17 @@ async function signin(req, res) {
       return resMessage(res, 404, "Your e-mail/password is invalid!");
     }
     const hashPass = md5(req.body.password);
-    const { _id, name, email, password, avatar, roles } = account;
+    const { _id, name, email, password, cart, avatar, roles } = account;
     if (hashPass !== password) {
       return resMessage(res, 401, "Your e-mail/password is invalid!");
     }
-    const accessToken = jwt.sign({ id: _id, email }, process.env.SECRET, {
-      expiresIn: 86400,
-    });
+    const accessToken = jwt.sign(
+      { id: _id, email, cart, roles: roles.map((role) => role.name) },
+      process.env.SECRET,
+      {
+        expiresIn: 86400,
+      }
+    );
     return res.status(200).send({
       id: _id,
       name,

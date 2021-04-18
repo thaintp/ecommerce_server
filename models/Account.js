@@ -13,7 +13,10 @@ const AccountSchema = mongoose.Schema({
       ref: "Order",
     },
   ],
-  cart: mongoose.Types.ObjectId,
+  cart: {
+    type: mongoose.Types.ObjectId,
+    ref: "Order",
+  },
   roles: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,6 +44,11 @@ class Account {
   async save() {
     if (this.model.roles.length === 0) {
       this.model.roles = [await Role.getUserId()];
+    }
+    if (this.model.cart === undefined) {
+      const order = new Order();
+      this.model.cart = order.getID();
+      await order.save();
     }
     return await this.model.save();
   }

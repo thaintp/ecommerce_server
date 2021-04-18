@@ -28,18 +28,33 @@ class Order {
     this.model.items = [];
     this.model.total = 0;
   }
+  async initByID(id) {
+    this.model = await OrderModel.findById(id);
+  }
+  async addItem(_item) {
+    const item = new Item();
+    await item.init(_item);
+    await item.save();
+    this.model.items.push(item.getID());
+    this.model.total += item.getTotal();
+  }
+  async save() {
+    this.model.save();
+  }
   async init(items) {
     for (let _item of items) {
-      const item = new Item();
-      await item.init(_item);
-      await item.save();
-      this.model.items.push(item.getID());
-      this.model.total += item.getTotal();
+      this.addItem(_item);
     }
     await this.model.save();
   }
   getID() {
     return this.model._id;
+  }
+  getModel() {
+    return this.model;
+  }
+  async getItems() {
+    return (await this.model.execPopulate("items")).items;
   }
 }
 
