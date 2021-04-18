@@ -10,8 +10,8 @@ const OrderSchema = mongoose.Schema({
   ],
   state: {
     type: String,
-    enum: ["Pending", "Completed", "Canceled"],
-    default: "Pending",
+    enum: ["Planning", "Pending", "Completed", "Canceled"],
+    default: "Planning",
   },
   total: {
     type: Number,
@@ -38,6 +38,10 @@ class Order {
     this.model.items.push(item.getID());
     this.model.total += item.getTotal();
   }
+  async pending() {
+    this.model.state = "Pending";
+    return await this.model.save();
+  }
   async save() {
     this.model.save();
   }
@@ -53,8 +57,11 @@ class Order {
   getModel() {
     return this.model;
   }
-  async getItems() {
-    return (await this.model.execPopulate("items")).items;
+  async getModelDetail() {
+    return await this.model.execPopulate({
+      path: "items",
+      populate: { path: "product" },
+    });
   }
 }
 

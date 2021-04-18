@@ -52,4 +52,27 @@ async function signin(req, res) {
   }
 }
 
-export { signup, signin };
+async function update(req, res) {
+  try {
+    const account = await Account.findById(req.accountID);
+    const { _id, name, email, cart, avatar, roles } = account;
+    const accessToken = jwt.sign(
+      { id: _id, email, cart, roles: roles.map((role) => role.name) },
+      process.env.SECRET,
+      {
+        expiresIn: 86400,
+      }
+    );
+    return res.status(200).send({
+      id: _id,
+      name,
+      email,
+      accessToken,
+      avatar,
+      roles: roles.map((role) => role.name),
+    });
+  } catch (err) {
+    throwErr(err, res);
+  }
+}
+export { signup, signin, update };

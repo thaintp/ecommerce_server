@@ -52,12 +52,21 @@ class Account {
     }
     return await this.model.save();
   }
-  static order = async (accountID, items) => {
-    const _order = new Order();
-    await _order.init(items);
+  static order = async (accountID) => {
     const account = await Account.findById(accountID);
-    account.orders.push(_order.getID());
+    const cart = account.cart;
+    const _order = new Order();
+    await _order.initByID(cart);
+    await _order.pending();
+
+    account.orders.push(cart);
+
+    const order = new Order();
+    account.cart = order.getID();
+    await order.save();
+
     await account.save();
+    return cart;
   };
   static findByEmail(email) {
     return AccountModel.findOne({ email }).populate("roles");
@@ -67,7 +76,7 @@ class Account {
     return account !== null;
   };
   static findById(id) {
-    return AccountModel.findById(id);
+    return AccountModel.findById(mongoose.Types.ObjectId(id)).populate("roles");
   }
   static init() {
     AccountModel.estimatedDocumentCount(async (err, count) => {
