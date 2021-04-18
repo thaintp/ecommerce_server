@@ -38,6 +38,10 @@ class Order {
     this.model.items.push(item.getID());
     this.model.total += item.getTotal();
   }
+  async removeItem(id) {
+    this.model.items = this.model.items.filter((item) => !item.equals(id));
+    this.model.total -= await Item.removeByID(id);
+  }
   async pending() {
     this.model.state = "Pending";
     return await this.model.save();

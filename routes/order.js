@@ -38,4 +38,17 @@ orderRouter.post("/addItem", verifyToken, async (req, res) => {
   }
 });
 
+orderRouter.delete("/removeItem", verifyToken, async (req, res) => {
+  try {
+    const order = new Order();
+    await order.initByID(req.cart);
+    await order.removeItem(req.body.item);
+    await order.save();
+    resSend(res, 200, await order.getModelDetail());
+  } catch (err) {
+    console.log(err);
+    throwErr(err, res);
+  }
+});
+
 export default orderRouter;

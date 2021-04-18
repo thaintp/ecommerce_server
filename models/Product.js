@@ -47,6 +47,10 @@ class Product {
     }
     throw new Error("Invalid order");
   }
+  async cancel(quantity) {
+    this.model.quantity += quantity;
+    return await this.model.save();
+  }
 
   hasValidItem(size, color, quantity) {
     return (

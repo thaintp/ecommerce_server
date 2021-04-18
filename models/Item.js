@@ -50,6 +50,15 @@ class Item {
       throw err;
     }
   }
+  static removeByID = async (id) => {
+    const item = await ItemModel.findById(id);
+    const total = item.total;
+    const product = new Product();
+    await product.init(item.product);
+    await product.cancel(item.quantity);
+    await ItemModel.findByIdAndDelete(id);
+    return total;
+  };
   getID() {
     return this.model._id;
   }
