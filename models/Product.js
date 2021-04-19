@@ -29,6 +29,10 @@ const ProductSchema = mongoose.Schema({
     default: 0,
   },
   description: String,
+  date: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 const ProductModel = mongoose.model("Product", ProductSchema);
@@ -60,6 +64,9 @@ class Product {
     );
   }
 
+  static getMongooseModel() {
+    return ProductModel;
+  }
   static getAll() {
     return ProductModel.find().lean();
   }
@@ -70,12 +77,12 @@ class Product {
     return ProductModel.findById(mongoose.Types.ObjectId(id)).lean();
   }
   static updateById(id, newProduct) {
-    return ProductSchema.findByIdAndUpdate(mongoose.Types.ObjectId(id), {
+    return ProductModel.findByIdAndUpdate(mongoose.Types.ObjectId(id), {
       ...newProduct,
     });
   }
   static removeById(id) {
-    return ProductSchema.findByIdAndDelete(mongoose.Types.ObjectId(id));
+    return ProductModel.findByIdAndDelete(mongoose.Types.ObjectId(id));
   }
 }
 

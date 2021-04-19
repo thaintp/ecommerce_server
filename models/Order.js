@@ -18,6 +18,10 @@ const OrderSchema = mongoose.Schema({
     required: true,
     default: 0,
   },
+  date: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 const OrderModel = mongoose.model("Order", OrderSchema);
@@ -28,8 +32,18 @@ class Order {
     this.model.items = [];
     this.model.total = 0;
   }
+  getState() {
+    return this.model.state;
+  }
+  async updateState(state) {
+    this.model.state = state;
+  }
+  async removeAllItems() {
+    this.model.total = 0;
+    this.model.items.map(async (id) => await Item.removeByID(id));
+  }
   async initByID(id) {
-    this.model = await OrderModel.findById(id);
+    this.model = await OrderModel.findById(mongoose.Types.ObjectId(id));
   }
   async addItem(_item) {
     const item = new Item();
@@ -44,7 +58,16 @@ class Order {
   }
   async pending() {
     this.model.state = "Pending";
+    this.model.date = new Date();
     return await this.model.save();
+  }
+  static getAll() {
+    return OrderModel.find()
+      .populate({
+        path: "items",
+        populate: { path: "product" },
+      })
+      .lean();
   }
   async save() {
     this.model.save();

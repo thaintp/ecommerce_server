@@ -41,6 +41,14 @@ class Account {
   setRoles(roles) {
     this.model.roles = roles;
   }
+  static crateNewCartByOldCart = async (oldCart) => {
+    const account = await AccountModel.findOne({ cart: oldCart });
+    account.orders.push(oldCart);
+    const cart = new Order();
+    account.cart = cart.getID();
+    await cart.save();
+    await account.save();
+  };
   async save() {
     if (this.model.roles.length === 0) {
       this.model.roles = [await Role.getUserId()];

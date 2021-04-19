@@ -21,9 +21,9 @@ function verifyToken(req, res, next) {
 
 async function isAdmin(req, res, next) {
   try {
-    if (req.roles.includes("seller")) next();
+    if (req.roles.includes("seller")) return next();
   } catch (err) {
-    throwErr(err, res);
+    return throwErr(err, res);
   }
   return resMessage(res, 403, "Require Seller Role!");
 }
