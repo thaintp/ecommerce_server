@@ -39,7 +39,6 @@ class Order {
     this.model.state = state;
   }
   async removeAllItems() {
-    this.model.total = 0;
     this.model.items.map(async (id) => await Item.removeByID(id));
   }
   async initByID(id) {

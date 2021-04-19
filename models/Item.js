@@ -51,13 +51,11 @@ class Item {
     }
   }
   static removeByID = async (id) => {
-    console.log(id);
     const item = await ItemModel.findById(mongoose.Types.ObjectId(id));
     const total = item.total;
     const product = new Product();
     await product.init(item.product);
     await product.cancel(item.quantity);
-    await ItemModel.findByIdAndDelete(id);
     return total;
   };
   getID() {

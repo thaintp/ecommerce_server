@@ -8,6 +8,7 @@ import {
   deleteProduct,
 } from "../middleware/product.js";
 import { resSend } from "../utils/patterns.js";
+import { verifyToken, isAdmin } from "../middleware/authJWT.js";
 
 const productRouter = express.Router();
 
@@ -27,9 +28,15 @@ productRouter.put("/:id", putProduct, (req, res) => {
   resSend(res, 200, res.product);
 });
 
-productRouter.delete("/:id", deleteProduct, (req, res) => {
-  resSend(res, 200, res.message);
-});
+productRouter.delete(
+  "/:id",
+  verifyToken,
+  isAdmin,
+  deleteProduct,
+  (req, res) => {
+    resSend(res, 200, res.message);
+  }
+);
 productRouter.post("/postSampleDatasets", postSampleProducts, (req, res) => {
   resSend(res, 200, res.products);
 });
