@@ -28,10 +28,18 @@ const ProductSchema = mongoose.Schema({
     required: true,
     default: 0,
   },
+  sold: {
+    type: Number,
+    default: 0,
+  },
   description: String,
   date: {
     type: Date,
     default: new Date(),
+  },
+  profit: {
+    type: Number,
+    default: 0,
   },
 });
 
@@ -45,14 +53,17 @@ class Product {
 
   async order(size, color, quantity) {
     if (this.hasValidItem(size, color, quantity)) {
-      this.model.quantity -= quantity;
+      this.model.sold += quantity;
+      const total = quantity * this.model.price;
+      this.model.profit += total;
       await this.model.save();
-      return quantity * this.model.price;
+      return total;
     }
     throw new Error("Invalid order");
   }
-  async cancel(quantity) {
-    this.model.quantity += quantity;
+  async cancel(quantity, total) {
+    this.model.sold -= quantity;
+    this.model.profit -= total;
     return await this.model.save();
   }
 
@@ -60,7 +71,7 @@ class Product {
     return (
       this.model.sizes.includes(size) &&
       this.model.colors.includes(color) &&
-      this.model.quantity >= quantity
+      this.model.quantity - this.model.sold >= quantity
     );
   }
 

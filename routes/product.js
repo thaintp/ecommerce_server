@@ -6,9 +6,11 @@ import {
   getProduct,
   putProduct,
   deleteProduct,
+  postProduct,
 } from "../middleware/product.js";
 import { resSend } from "../utils/patterns.js";
 import { verifyToken, isAdmin } from "../middleware/authJWT.js";
+import { uploadImages } from "../middleware/image.js";
 
 const productRouter = express.Router();
 
@@ -18,6 +20,9 @@ productRouter.get("/:id", getProduct, (req, res) => {
 
 productRouter.get("/", getAllProducts, (req, res) => {
   resSend(res, 200, res.allProducts);
+});
+productRouter.post("/", verifyToken, uploadImages, postProduct, (req, res) => {
+  resSend(res, 200, "OK");
 });
 
 productRouter.get("/brand/:name", getAllProductsByBrand, (req, res) => {

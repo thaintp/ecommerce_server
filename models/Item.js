@@ -55,7 +55,7 @@ class Item {
     const total = item.total;
     const product = new Product();
     await product.init(item.product);
-    await product.cancel(item.quantity);
+    await product.cancel(item.quantity, item.total);
     return total;
   };
   getID() {

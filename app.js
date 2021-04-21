@@ -14,6 +14,7 @@ import accountRouter from "./routes/account.js";
 import initRoleRouter from "./routes/initRole.js";
 import initAdminRouter from "./routes/initAdmin.js";
 import orderRouter from "./routes/order.js";
+import fileUpload from "express-fileupload";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -46,6 +47,11 @@ app.use(
   cors({
     origin: (origin, callback) => callback(null, true),
     credentials: true,
+  })
+);
+app.use(
+  fileUpload({
+    createParentPath: true,
   })
 );
 app.use(express.json());

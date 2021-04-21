@@ -47,6 +47,15 @@ async function getAllProducts(req, res, next) {
   return next();
 }
 
+async function postProduct(req, res, next) {
+  try {
+    console.log(req.body);
+    next();
+  } catch (err) {
+    return throwErr(err, res);
+  }
+}
+
 async function postSampleProducts(req, res, next) {
   try {
     const products = [];
@@ -112,4 +121,5 @@ export {
   putProduct,
   deleteProduct,
   postSampleProducts,
+  postProduct,
 };
