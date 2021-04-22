@@ -22,15 +22,15 @@ productRouter.get("/", getAllProducts, (req, res) => {
   resSend(res, 200, res.allProducts);
 });
 productRouter.post("/", verifyToken, uploadImages, postProduct, (req, res) => {
-  resSend(res, 200, "OK");
+  resSend(res, 200, req.product);
 });
 
 productRouter.get("/brand/:name", getAllProductsByBrand, (req, res) => {
   resSend(res, 200, res.allProducts);
 });
 
-productRouter.put("/:id", putProduct, (req, res) => {
-  resSend(res, 200, res.product);
+productRouter.put("/:id", verifyToken, uploadImages, putProduct, (req, res) => {
+  resSend(res, 200, res.newProduct);
 });
 
 productRouter.delete(

@@ -47,6 +47,13 @@ const ProductModel = mongoose.model("Product", ProductSchema);
 
 class Product {
   constructor() {}
+  async create(product) {
+    this.model = new ProductModel(product);
+    return this.model;
+  }
+  save() {
+    return this.model.save();
+  }
   async init(id) {
     this.model = await ProductModel.findById(mongoose.Types.ObjectId(id));
   }
@@ -88,9 +95,13 @@ class Product {
     return ProductModel.findById(mongoose.Types.ObjectId(id)).lean();
   }
   static updateById(id, newProduct) {
-    return ProductModel.findByIdAndUpdate(mongoose.Types.ObjectId(id), {
-      ...newProduct,
-    });
+    return ProductModel.findByIdAndUpdate(
+      mongoose.Types.ObjectId(id),
+      {
+        ...newProduct,
+      },
+      { new: true }
+    );
   }
   static removeById(id) {
     return ProductModel.findByIdAndDelete(mongoose.Types.ObjectId(id));

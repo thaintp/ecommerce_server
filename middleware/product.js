@@ -21,8 +21,20 @@ async function getAllProductsByBrand(req, res, next) {
 
 async function putProduct(req, res, next) {
   try {
-    res.product = await Product.updateById(req.params.id);
+    const photos = [req.photos, req.body.photos]
+      .flat(2)
+      .filter((photo) => photo != undefined);
+
+    const body = req.body;
+    res.newProduct = await Product.updateById(req.params.id, {
+      ...body,
+      photos,
+      categories: JSON.parse(body.categories.split(",")),
+      sizes: JSON.parse(body.sizes.split(",")),
+      colors: JSON.parse(body.colors),
+    });
   } catch (err) {
+    console.log(err);
     return throwErr(err, res);
   }
   return next();
@@ -49,11 +61,20 @@ async function getAllProducts(req, res, next) {
 
 async function postProduct(req, res, next) {
   try {
-    console.log(req.body);
-    next();
+    const product = new Product();
+    const body = req.body;
+    req.product = await product.create({
+      photos: req.photos,
+      ...body,
+      categories: JSON.parse(body.categories),
+      sizes: JSON.parse(body.sizes),
+      colors: JSON.parse(body.colors),
+    });
+    await product.save();
   } catch (err) {
     return throwErr(err, res);
   }
+  return next();
 }
 
 async function postSampleProducts(req, res, next) {
