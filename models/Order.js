@@ -89,6 +89,14 @@ class Order {
       populate: { path: "product" },
     });
   }
+  async update() {
+    const model = await this.getModelDetail();
+    model.total = 0;
+    for (let item of model.items) {
+      model.total += item.total;
+    }
+    return await model.save();
+  }
 }
 
 export default Order;

@@ -1,5 +1,5 @@
 import { isAdmin, verifyToken } from "../middleware/authJWT.js";
-import { Account, Order } from "../models/index.js";
+import { Account, Order, Item } from "../models/index.js";
 import { throwErr, resSend } from "../utils/patterns.js";
 
 import express from "express";
@@ -66,6 +66,18 @@ orderRouter.post("/addItem", verifyToken, async (req, res) => {
     await order.addItem(req.body.item);
     await order.save();
     resSend(res, 200, await order.getModelDetail());
+  } catch (err) {
+    console.log(err);
+    throwErr(err, res);
+  }
+});
+
+orderRouter.put("/changeItem/:id", verifyToken, async (req, res) => {
+  try {
+    await Item.updateById(req.params.id, req.body.item);
+    const order = new Order();
+    await order.initByID(req.cart);
+    resSend(res, 200, await order.update());
   } catch (err) {
     console.log(err);
     throwErr(err, res);

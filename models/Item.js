@@ -58,6 +58,20 @@ class Item {
     await product.cancel(item.quantity, item.total);
     return total;
   };
+  static updateById = async (id, newItem) => {
+    const item = await ItemModel.findById(mongoose.Types.ObjectId(id));
+    item.color = newItem.color ?? item.color;
+    item.size = newItem.size ?? item.size;
+    if (newItem.quantity !== undefined) {
+      const product = new Product();
+      await product.init(item.product);
+      await product.cancel(item.quantity, item.total);
+      item.quantity = newItem.quantity;
+      item.total = await product.order(item.size, item.color, item.quantity);
+    }
+    await item.save();
+    return item;
+  };
   getID() {
     return this.model._id;
   }

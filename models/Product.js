@@ -82,11 +82,27 @@ class Product {
     );
   }
 
+  static search(name) {
+    console.log(name);
+    return ProductModel.find({
+      name: { $regex: new RegExp(name, "i") },
+    }).lean();
+  }
+
   static getMongooseModel() {
     return ProductModel;
   }
   static getAll() {
     return ProductModel.find().lean();
+  }
+  static paginate(page, quantity) {
+    return ProductModel.find()
+      .limit(quantity)
+      .skip((page - 1) * quantity);
+  }
+  static async getMaxPaginate(quantity) {
+    const count = await ProductModel.estimatedDocumentCount();
+    return Math.ceil(count / quantity);
   }
   static getAllByBrand(brand) {
     return ProductModel.find({ brand }).lean();

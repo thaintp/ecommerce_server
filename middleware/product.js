@@ -10,6 +10,41 @@ async function getProduct(req, res, next) {
   return next();
 }
 
+async function paginate(req, res, next) {
+  try {
+    res.products = await Product.paginate(
+      parseInt(req.params.page),
+      parseInt(req.params.quantity)
+    );
+  } catch (err) {
+    console.log(err);
+    return throwErr(err, res);
+  }
+  return next();
+}
+
+async function getMaxPaginate(req, res, next) {
+  try {
+    res.max = await (
+      await Product.getMaxPaginate(parseInt(req.params.quantity))
+    ).toString();
+  } catch (err) {
+    console.log(err);
+    return throwErr(err, res);
+  }
+  return next();
+}
+
+async function search(req, res, next) {
+  try {
+    res.products = await Product.search(req.query.name);
+  } catch (err) {
+    console.log(err);
+    return throwErr(err, res);
+  }
+  return next();
+}
+
 async function getAllProductsByBrand(req, res, next) {
   try {
     res.allProducts = await Product.getAllByBrand(req.params.name);
@@ -143,4 +178,7 @@ export {
   deleteProduct,
   postSampleProducts,
   postProduct,
+  paginate,
+  getMaxPaginate,
+  search,
 };
