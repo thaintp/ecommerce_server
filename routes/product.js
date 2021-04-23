@@ -9,7 +9,8 @@ import {
   postProduct,
   paginate,
   getMaxPaginate,
-  search,
+  getProducts,
+  count,
 } from "../middleware/product.js";
 import { resSend } from "../utils/patterns.js";
 import { verifyToken, isAdmin } from "../middleware/authJWT.js";
@@ -17,15 +18,22 @@ import { uploadImages } from "../middleware/image.js";
 
 const productRouter = express.Router();
 
+productRouter.get("/", getProducts, (req, res) => {
+  resSend(res, 200, res.products);
+});
+productRouter.get("/count", count, (req, res) => {
+  resSend(res, 200, res.count);
+});
+
 productRouter.get("/all", getAllProducts, (req, res) => {
   resSend(res, 200, res.allProducts);
 });
 productRouter.get("/:id", getProduct, (req, res) => {
   resSend(res, 200, res.product);
 });
-productRouter.get("/", search, (req, res) => {
-  resSend(res, 200, res.products);
-});
+// productRouter.get("/", search, (req, res) => {
+//   resSend(res, 200, res.products);
+// });
 
 productRouter.get("/paginate/:page/:quantity", paginate, (req, res) => {
   resSend(res, 200, res.products);
