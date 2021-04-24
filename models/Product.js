@@ -57,6 +57,16 @@ class Product {
   async init(id) {
     this.model = await ProductModel.findById(mongoose.Types.ObjectId(id));
   }
+  static async get(filter, page, limit) {
+    let res = ProductModel.find(filter);
+    res = limit ? res.limit(parseInt(limit)) : res;
+    res = page ? res.skip(parseInt(page - 1) * parseInt(limit ?? 1)) : res;
+    return res.lean();
+  }
+  static async count(filter) {
+    let res = ProductModel.find(filter);
+    return res.count();
+  }
 
   async order(size, color, quantity) {
     if (this.hasValidItem(size, color, quantity)) {

@@ -1,5 +1,6 @@
 import { Product } from "../models/index.js";
-import { throwErr } from "../utils/patterns.js";
+import { resSend, throwErr } from "../utils/patterns.js";
+import mongoose from "mongoose";
 
 async function getProduct(req, res, next) {
   try {
@@ -28,6 +29,43 @@ async function getMaxPaginate(req, res, next) {
     res.max = await (
       await Product.getMaxPaginate(parseInt(req.params.quantity))
     ).toString();
+  } catch (err) {
+    console.log(err);
+    return throwErr(err, res);
+  }
+  return next();
+}
+
+async function getProducts(req, res, next) {
+  try {
+    const query = req.query;
+    const filter = {};
+    if (query.name) {
+      filter.name = { $regex: new RegExp(query.name, "i") };
+    }
+    if (query.id) {
+      filter._id = mongoose.Types.ObjectId(query.id);
+    }
+    res.products = await Product.get(filter, query.page, query.limit);
+  } catch (err) {
+    console.log(err);
+    return throwErr(err, res);
+  }
+  return next();
+}
+
+async function count(req, res, next) {
+  try {
+    const query = req.query;
+    const filter = {};
+    if (query.name) {
+      filter.name = { $regex: new RegExp(query.name, "i") };
+    }
+    if (query.id) {
+      filter._id = mongoose.Types.ObjectId(query.id);
+    }
+    const count = await Product.count(filter);
+    res.count = count.toString();
   } catch (err) {
     console.log(err);
     return throwErr(err, res);
@@ -181,4 +219,6 @@ export {
   paginate,
   getMaxPaginate,
   search,
+  getProducts,
+  count,
 };
