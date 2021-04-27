@@ -67,9 +67,14 @@ class Product {
       filter._id = categoryProducts.map((x) => x.product);
     }
     let res = ProductModel.find(filter);
+
     res = limit ? res.limit(parseInt(limit)) : res;
     res = page ? res.skip(parseInt(page - 1) * parseInt(limit ?? 1)) : res;
-    return res.lean();
+
+    return {
+      products: await res.lean(),
+      count: await ProductModel.countDocuments(filter),
+    };
   }
   static async count(filter, category) {
     if (category) {
