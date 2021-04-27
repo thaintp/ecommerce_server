@@ -14,6 +14,7 @@ import accountRouter from "./routes/account.js";
 import initRoleRouter from "./routes/initRole.js";
 import initAdminRouter from "./routes/initAdmin.js";
 import orderRouter from "./routes/order.js";
+import categoryRouter from "./routes/category.js";
 import fileUpload from "express-fileupload";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -75,6 +76,7 @@ app.use("/api/account", accountRouter);
 app.use("/api/initRole", initRoleRouter);
 app.use("/api/initAdmin", initAdminRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/category", categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

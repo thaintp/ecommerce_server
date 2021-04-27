@@ -1,4 +1,4 @@
-import { Product } from "../models/index.js";
+import { Category, CategoryProduct, Product } from "../models/index.js";
 import { resSend, throwErr } from "../utils/patterns.js";
 import mongoose from "mongoose";
 
@@ -46,7 +46,12 @@ async function getProducts(req, res, next) {
     if (query.id) {
       filter._id = mongoose.Types.ObjectId(query.id);
     }
-    res.products = await Product.get(filter, query.page, query.limit);
+    res.products = await Product.get(
+      filter,
+      query.page,
+      query.limit,
+      query.category
+    );
   } catch (err) {
     console.log(err);
     return throwErr(err, res);
@@ -64,7 +69,7 @@ async function count(req, res, next) {
     if (query.id) {
       filter._id = mongoose.Types.ObjectId(query.id);
     }
-    const count = await Product.count(filter);
+    const count = await Product.count(filter, query.category);
     res.count = count.toString();
   } catch (err) {
     console.log(err);
@@ -150,6 +155,27 @@ async function postProduct(req, res, next) {
   return next();
 }
 
+async function sampleUpdateCategory(req, res, next) {
+  try {
+    let products = await Product.getAll();
+    products = products.map((product) => product._id);
+    let categories = await Category.getCategories();
+    categories = categories.map((category) => category._id);
+    for (let [index, product] of products.entries()) {
+      await CategoryProduct.addCategoriesToProduct(
+        categories.slice(
+          index % categories.length,
+          (index + 2) % categories.length
+        ),
+        product
+      );
+    }
+  } catch (err) {
+    return throwErr(err, res);
+  }
+  next();
+}
+
 async function postSampleProducts(req, res, next) {
   try {
     const products = [];
@@ -221,4 +247,5 @@ export {
   search,
   getProducts,
   count,
+  sampleUpdateCategory,
 };

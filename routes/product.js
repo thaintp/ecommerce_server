@@ -11,6 +11,7 @@ import {
   getMaxPaginate,
   getProducts,
   count,
+  sampleUpdateCategory,
 } from "../middleware/product.js";
 import { resSend } from "../utils/patterns.js";
 import { verifyToken, isAdmin } from "../middleware/authJWT.js";
@@ -65,5 +66,12 @@ productRouter.delete(
 productRouter.post("/postSampleDatasets", postSampleProducts, (req, res) => {
   resSend(res, 200, res.products);
 });
+productRouter.post(
+  "/sampleUpdateCategory",
+  sampleUpdateCategory,
+  (req, res) => {
+    resSend(res, 200, "updated");
+  }
+);
 
 export default productRouter;

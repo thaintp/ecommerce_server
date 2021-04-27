@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CategoryProduct } from "./index.js";
 
 const ProductSchema = mongoose.Schema({
   name: {
@@ -10,7 +11,6 @@ const ProductSchema = mongoose.Schema({
     required: true,
     validate: [(val) => val.length <= 8, "Photos up to 8"],
   },
-  categories: [String],
   brand: {
     type: String,
     required: true,
@@ -49,6 +49,10 @@ class Product {
   constructor() {}
   async create(product) {
     this.model = new ProductModel(product);
+    await CategoryProduct.addCategoriesToProduct(
+      product.categories,
+      this.model._id
+    );
     return this.model;
   }
   save() {
@@ -57,13 +61,21 @@ class Product {
   async init(id) {
     this.model = await ProductModel.findById(mongoose.Types.ObjectId(id));
   }
-  static async get(filter, page, limit) {
+  static async get(filter, page, limit, category) {
+    if (category) {
+      const categoryProducts = await CategoryProduct.getProductsID(category);
+      filter._id = categoryProducts.map((x) => x.product);
+    }
     let res = ProductModel.find(filter);
     res = limit ? res.limit(parseInt(limit)) : res;
     res = page ? res.skip(parseInt(page - 1) * parseInt(limit ?? 1)) : res;
     return res.lean();
   }
-  static async count(filter) {
+  static async count(filter, category) {
+    if (category) {
+      const categoryProducts = await CategoryProduct.getProductsID(category);
+      filter._id = categoryProducts.map((x) => x.product);
+    }
     let res = ProductModel.find(filter);
     return res.count();
   }

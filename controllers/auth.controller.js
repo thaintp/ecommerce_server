@@ -1,3 +1,4 @@
+import { log } from "debug";
 import jwt from "jsonwebtoken";
 import md5 from "md5";
 import { Account, Role } from "../models/index.js";
@@ -28,6 +29,7 @@ async function signin(req, res) {
       return resMessage(res, 404, "Your e-mail/password is invalid!");
     }
     const hashPass = md5(req.body.password);
+    console.log(hashPass);
     const { _id, name, email, password, cart, avatar, roles } = account;
     if (hashPass !== password) {
       return resMessage(res, 401, "Your e-mail/password is invalid!");
