@@ -55,12 +55,31 @@ class Product {
     );
     return this.model;
   }
+  static updateById(id, newProduct) {
+    CategoryProduct.updateCategories(newProduct.categories, id);
+    return ProductModel.findByIdAndUpdate(
+      mongoose.Types.ObjectId(id),
+      {
+        ...newProduct,
+      },
+      { new: true }
+    );
+  }
   save() {
     return this.model.save();
   }
   async init(id) {
     this.model = await ProductModel.findById(mongoose.Types.ObjectId(id));
   }
+  static async getWithCategories() {
+    const res = await ProductModel.find().lean();
+    const mapCategoriesProduct = await CategoryProduct.getMapCategoriesProduct();
+    return res.map((product) => ({
+      ...product,
+      categories: mapCategoriesProduct[product._id],
+    }));
+  }
+
   static async get(filter, page, limit, category) {
     if (category) {
       const categoryProducts = await CategoryProduct.getProductsID(category);
@@ -137,15 +156,7 @@ class Product {
   static getById(id) {
     return ProductModel.findById(mongoose.Types.ObjectId(id)).lean();
   }
-  static updateById(id, newProduct) {
-    return ProductModel.findByIdAndUpdate(
-      mongoose.Types.ObjectId(id),
-      {
-        ...newProduct,
-      },
-      { new: true }
-    );
-  }
+
   static removeById(id) {
     return ProductModel.findByIdAndDelete(mongoose.Types.ObjectId(id));
   }

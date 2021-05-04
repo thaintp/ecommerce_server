@@ -36,6 +36,16 @@ async function getMaxPaginate(req, res, next) {
   return next();
 }
 
+async function getWithCategories(req, res, next) {
+  try {
+    res.products = await Product.getWithCategories();
+  } catch (err) {
+    console.log(err);
+    return throwErr(err, res);
+  }
+  return next();
+}
+
 async function getProducts(req, res, next) {
   try {
     const query = req.query;
@@ -248,4 +258,5 @@ export {
   getProducts,
   count,
   sampleUpdateCategory,
+  getWithCategories,
 };

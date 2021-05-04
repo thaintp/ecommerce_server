@@ -12,6 +12,7 @@ import {
   getProducts,
   count,
   sampleUpdateCategory,
+  getWithCategories,
 } from "../middleware/product.js";
 import { resSend } from "../utils/patterns.js";
 import { verifyToken, isAdmin } from "../middleware/authJWT.js";
@@ -20,6 +21,9 @@ import { uploadImages } from "../middleware/image.js";
 const productRouter = express.Router();
 
 productRouter.get("/", getProducts, (req, res) => {
+  resSend(res, 200, res.products);
+});
+productRouter.get("/withCategories", getWithCategories, (req, res) => {
   resSend(res, 200, res.products);
 });
 productRouter.get("/count", count, (req, res) => {
