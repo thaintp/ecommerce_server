@@ -80,13 +80,14 @@ class Product {
     }));
   }
 
-  static async get(filter, page, limit, category) {
+  static async get(filter, page, limit, category, sort) {
     if (category) {
       const categoryProducts = await CategoryProduct.getProductsID(category);
       filter._id = categoryProducts.map((x) => x.product);
     }
     let res = ProductModel.find(filter);
 
+    res = sort ? res.sort(sort) : res;
     res = limit ? res.limit(parseInt(limit)) : res;
     res = page ? res.skip(parseInt(page - 1) * parseInt(limit ?? 1)) : res;
 

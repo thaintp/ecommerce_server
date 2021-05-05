@@ -60,7 +60,8 @@ async function getProducts(req, res, next) {
       filter,
       query.page,
       query.limit,
-      query.category
+      query.category,
+      query.sort ? JSON.parse(query.sort) : undefined
     );
   } catch (err) {
     console.log(err);
